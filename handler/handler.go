@@ -34,13 +34,12 @@ func Transmit(c echo.Context) error {
 	sess.Select("signal").From("command").Where("id = ?", id).Load(&signal)
 
 	err := exec.Command("/usr/local/bin/bto_ir_cmd", "-e", "-t", signal).Run()
-	var response model.Response
-	if err == nil {
-		response.Success = true
-	} else {
-		response.Success = false
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
 	}
 
+	var response model.Response
+	response.Success = true
 	return cc.JSON(http.StatusOK, response)
 }
 
@@ -49,9 +48,12 @@ func Receive(c echo.Context) error {
 
 	request := new(model.Request)
 	if err := cc.Bind(request); err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, "Bad Request Body")
 	}
 
 	out, err := exec.Command("/usr/local/bin/bto_ir_cmd", "-e", "-r").Output()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
+	}
 	return cc.JSON(http.StatusOK, out)
 }
