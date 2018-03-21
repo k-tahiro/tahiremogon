@@ -32,6 +32,9 @@ func Transmit(c echo.Context) error {
 	var signal string
 	sess := cc.Connection.NewSession(nil)
 	sess.Select("signal").From("command").Where("id = ?", id).Load(&signal)
+	if signal == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "Command Undefined")
+	}
 
 	err := exec.Command("/usr/local/bin/bto_ir_cmd", "-e", "-t", signal).Run()
 	if err != nil {
