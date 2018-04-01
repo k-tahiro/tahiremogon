@@ -20,7 +20,7 @@ func Commands(c echo.Context) error {
 
 	var commands []model.Command
 	sess := cc.Connection.NewSession(nil)
-	sess.Select("id","name").From("command").Load(&commands)
+	sess.Select("id", "name").From("command").Load(&commands)
 	
     return cc.JSON(http.StatusOK, commands)
 }
