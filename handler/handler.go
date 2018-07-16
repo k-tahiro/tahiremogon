@@ -20,7 +20,7 @@ func Commands(c echo.Context) error {
 
 	var commands []model.Command
 	sess := cc.Connection.NewSession(nil)
-	sess.Select("id", "name").From("command").Load(&commands)
+	sess.Select("id", "name", "signal").From("command").Load(&commands)
 	
     return cc.JSON(http.StatusOK, commands)
 }
@@ -62,7 +62,7 @@ func Receive(c echo.Context) error {
 	var command model.Command
 	command.ID = request.ID
 	command.Name = request.Name
-	command.Signal = string(signal)
+	command.Signal = string(signal[:])
 
 	sess := cc.Connection.NewSession(nil)
 	sess.InsertInto("command").Columns("id", "name", "signal").Record(command).Exec()

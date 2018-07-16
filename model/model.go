@@ -6,6 +6,12 @@ type (
         Name string  `db:"name"`
         Signal string  `db:"signal"`
     }
+
+    CommandJSON struct {
+        ID   string `json:"id"`
+        Name string  `json:"name"`
+        Signal string  `json:"signal"`
+    }
 	
 	Response struct {
 		Success bool `json:"success"`
