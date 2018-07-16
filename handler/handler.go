@@ -18,7 +18,7 @@ func Hello(c echo.Context) error {
 func Commands(c echo.Context) error {
 	cc := c.(*myMw.CustomContext)
 
-	var commands []model.Command
+	var commands []model.CommandJSON
 	sess := cc.Connection.NewSession(nil)
 	sess.Select("id", "name", "signal").From("command").Load(&commands)
 	
