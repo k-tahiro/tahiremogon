@@ -36,7 +36,7 @@ func Transmit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Command Undefined")
 	}
 
-	err := exec.Command("/usr/local/bin/bto_ir_cmd", "-e", "-t", signal).Run()
+	err := exec.Command("/usr/local/bin/transmit.sh", signal).Run()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
 	}
@@ -54,9 +54,18 @@ func Receive(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Bad Request Body")
 	}
 
-	out, err := exec.Command("/usr/local/bin/bto_ir_cmd", "-e", "-r").Output()
+	signal, err := exec.Command("/usr/local/bin/receive.sh").Output()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
 	}
+
+	var command model.Command
+	command.ID = request.ID
+	command.Name = request.Name
+	command.Signal = signal
+
+	sess := cc.Connection.NewSession(nil)
+	sess.InsertInto("command").Columns("id", "name", "signal").Record(command).Exec()
+
 	return cc.JSON(http.StatusOK, out)
 }
