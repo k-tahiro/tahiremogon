@@ -62,10 +62,12 @@ func Receive(c echo.Context) error {
 	var command model.Command
 	command.ID = request.ID
 	command.Name = request.Name
-	command.Signal = signal
+	command.Signal = string(signal)
 
 	sess := cc.Connection.NewSession(nil)
 	sess.InsertInto("command").Columns("id", "name", "signal").Record(command).Exec()
 
-	return cc.JSON(http.StatusOK, out)
+	var response model.Response
+	response.Success = true
+	return cc.JSON(http.StatusOK, response)
 }
