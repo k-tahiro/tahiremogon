@@ -20,8 +20,8 @@ func main() {
     e.Use(myMw.MyCustomContextMiddleware())
 
     // DB用Middlewareを適用
-    e.Use(myMw.SQLiteMiddleware("./command.db"))
-
+	e.Use(myMw.SQLiteMiddleware("./command.db"))
+	
 	// Routes
 	e.GET("/", handler.Hello)
 	// Routes
@@ -30,6 +30,11 @@ func main() {
 		commands.GET("/", handler.Commands)
 		commands.POST("/transmit/:id", handler.Transmit)
 		commands.POST("/receive", handler.Receive)
+	}
+
+	data := e.Group("/data")
+	{
+		data.POST("/images", handler.ReceiveImage)
 	}
 
 	// Start server

@@ -1,8 +1,12 @@
 package handler
 
 import (
+	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"os/exec"
+	"time"
 
 	"github.com/labstack/echo"
 
@@ -36,10 +40,13 @@ func Transmit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Command Undefined")
 	}
 
-	err := exec.Command("/usr/local/bin/transmit.sh", signal).Run()
+	filename, err := exec.Command("/usr/local/bin/transmit.sh", signal).Output()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
 	}
+
+	// TODO: 画像認識処理
+	fmt.Println(filename)
 
 	var response model.Response
 	response.Success = true
@@ -66,6 +73,45 @@ func Receive(c echo.Context) error {
 
 	sess := cc.Connection.NewSession(nil)
 	sess.InsertInto("command").Columns("id", "name", "signal").Record(command).Exec()
+
+	var response model.Response
+	response.Success = true
+	return cc.JSON(http.StatusOK, response)
+}
+
+func ReceiveImage(c echo.Context) error {
+	cc := c.(*myMw.CustomContext)
+
+	filename := "image_" + time.Now().String()
+
+	//-----------
+	// Read file
+	//-----------
+
+	// Source
+	file, err := cc.FormFile("file")
+	if err != nil {
+		return err
+	}
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	// Destination
+	dst, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	// Copy
+	if _, err = io.Copy(dst, src); err != nil {
+		return err
+	}
+
+	fmt.Println(filename)
 
 	var response model.Response
 	response.Success = true

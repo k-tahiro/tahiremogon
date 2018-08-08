@@ -5,7 +5,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/gocraft/dbr"
 	_ "github.com/mattn/go-sqlite3" // まずは既存のSQLiteのデータベースへ接続する
-	_ "github.com/go-sql-driver/mysql" // 本当はmain.goに置いほうが良いらしい
+    _ "github.com/go-sql-driver/mysql" // 本当はmain.goに置いほうが良いらしい
 )
 
 // カスタムコンテキスト
