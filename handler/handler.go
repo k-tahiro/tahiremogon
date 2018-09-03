@@ -82,7 +82,7 @@ func Receive(c echo.Context) error {
 func ReceiveImage(c echo.Context) error {
 	cc := c.(*myMw.CustomContext)
 
-	filename := os.Getenv("IMG_DIR") + "/image_" + time.Now().String()
+	filename := os.Getenv("IMG_DIR") + "/image_" + time.Now().String() + ".jpg"
 
 	//-----------
 	// Read file
