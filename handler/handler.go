@@ -111,7 +111,7 @@ func ReceiveImage(c echo.Context) error {
 		return err
 	}
 
-	err = exec.Command("/usr/local/bin/window.py", "-t", filename).Run()
+	err = exec.Command("/usr/local/bin/trimming.py", "-t", filename).Run()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
 	}
