@@ -25,8 +25,8 @@ func Commands(c echo.Context) error {
 	var commands []model.CommandJSON
 	sess := cc.Connection.NewSession(nil)
 	sess.Select("id", "name", "signal").From("command").Load(&commands)
-	
-    return cc.JSON(http.StatusOK, commands)
+
+	return cc.JSON(http.StatusOK, commands)
 }
 
 func Transmit(c echo.Context) error {
@@ -111,7 +111,10 @@ func ReceiveImage(c echo.Context) error {
 		return err
 	}
 
-	fmt.Println(filename)
+	err = exec.Command("/usr/local/bin/window.py", "-t", filename).Run()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
+	}
 
 	var response model.Response
 	response.Success = true
