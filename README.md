@@ -4,7 +4,7 @@ Infrared Remote Controller for Raspberry Pi with Bit Trade One IR Remocon.
 
 ## Description
 
-tahiremogon is a REST-API for Raspberry Pi with Bit Trade One IR Remocon.
+tahiremogon is a REST-API for Raspberry Pi with Bit Trade One IR Remocon.  
 And also with Android smartphone to detect the result of IR signal transmission.
 
 ## Features
