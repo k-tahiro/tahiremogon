@@ -2,11 +2,8 @@ package handler
 
 import (
 	"fmt"
-	"io"
 	"net/http"
-	"os"
 	"os/exec"
-	"time"
 
 	"github.com/labstack/echo"
 
@@ -73,48 +70,6 @@ func Receive(c echo.Context) error {
 
 	sess := cc.Connection.NewSession(nil)
 	sess.InsertInto("command").Columns("id", "name", "signal").Record(command).Exec()
-
-	var response model.Response
-	response.Success = true
-	return cc.JSON(http.StatusOK, response)
-}
-
-func ReceiveImage(c echo.Context) error {
-	cc := c.(*myMw.CustomContext)
-
-	filename := os.Getenv("IMG_DIR") + "/image_" + time.Now().String() + ".jpg"
-
-	//-----------
-	// Read file
-	//-----------
-
-	// Source
-	file, err := cc.FormFile("file")
-	if err != nil {
-		return err
-	}
-	src, err := file.Open()
-	if err != nil {
-		return err
-	}
-	defer src.Close()
-
-	// Destination
-	dst, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer dst.Close()
-
-	// Copy
-	if _, err = io.Copy(dst, src); err != nil {
-		return err
-	}
-
-	err = exec.Command("/usr/local/bin/trimming.py", "-t", filename).Run()
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
-	}
 
 	var response model.Response
 	response.Success = true

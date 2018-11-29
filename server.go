@@ -4,8 +4,8 @@ import (
 	"github.com/labstack/echo"
 	echoMw "github.com/labstack/echo/middleware"
 
-	myMw "./middleware"
 	"./handler"
+	myMw "./middleware"
 )
 
 func main() {
@@ -17,11 +17,11 @@ func main() {
 	e.Use(echoMw.Recover())
 
 	// カスタムコンテキスト用Middlewareを適用
-    e.Use(myMw.MyCustomContextMiddleware())
+	e.Use(myMw.MyCustomContextMiddleware())
 
-    // DB用Middlewareを適用
+	// DB用Middlewareを適用
 	e.Use(myMw.SQLiteMiddleware("./command.db"))
-	
+
 	// Routes
 	e.GET("/", handler.Hello)
 	// Routes
@@ -30,11 +30,6 @@ func main() {
 		commands.GET("/", handler.Commands)
 		commands.POST("/transmit/:id", handler.Transmit)
 		commands.POST("/receive", handler.Receive)
-	}
-
-	data := e.Group("/data")
-	{
-		data.POST("/images", handler.ReceiveImage)
 	}
 
 	// Start server
