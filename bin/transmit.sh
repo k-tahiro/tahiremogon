@@ -2,8 +2,11 @@
 
 readonly CAMERA_APP="com.huawei.camera/com.huawei.camera"
 readonly DATA_DIR="/sdcard/DCIM/Camera"
+readonly LOG_DIR="/var/log/tahiremogon"
+readonly ADB_LOG_FILE="${LOG_DIR}/adb.log"
+readonly CMD_LOG_FILE="${LOG_DIR}/cmd.log"
 
-sudo /usr/local/bin/bto_ir_cmd -e -t "$1" >/dev/null 2>&1
+sudo /usr/local/bin/bto_ir_cmd -e -t "$1" >>"${CMD_LOG_FILE}" 2>&1
 
 {
   adb shell touch "${DATA_DIR}/newer"
@@ -13,15 +16,15 @@ sudo /usr/local/bin/bto_ir_cmd -e -t "$1" >/dev/null 2>&1
   adb shell input keyevent 27 # release the shutter
   adb shell input keyevent 3 # back to home
   adb shell input keyevent 223 # sleep
-} >>/var/log/tahiremogon/adb.log 2>&1
+} >>"${ADB_LOG_FILE}" 2>&1
 
 while :
 do
   FILENAME=$(adb shell find ${DATA_DIR} -type f -newer ${DATA_DIR}/newer | grep jpg)
   if [ "${FILENAME}" != "" ]; then
     if [ $(echo "${FILENAME}" | wc -l) -eq 1 ]; then
-      adb pull "${FILENAME}" "${IMG_DIR}" >>/varlog/adb.log 2>&1
-      adb shell rm -f "${FILENAME}" >>/varlog/adb.log 2>&1
+      adb pull "${FILENAME}" "${IMG_DIR}" >>"${ADB_LOG_FILE}" 2>&1
+      adb shell rm -f "${FILENAME}" >>"${ADB_LOG_FILE}" 2>&1
       break
     else
       {
@@ -34,6 +37,6 @@ do
   fi
   sleep 1
 done
-adb shell rm -f "${DATA_DIR}/newer" >>/varlog/adb.log 2>&1
+adb shell rm -f "${DATA_DIR}/newer" >>"${ADB_LOG_FILE}" 2>&1
 
 basename "${FILENAME}"
