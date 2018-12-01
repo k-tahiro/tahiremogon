@@ -9,7 +9,7 @@ And also with Android smartphone to detect the result of IR signal transmission.
 
 ## Features
 
-- transmit IR signal with webhook.
+- transmit IR signal using webhook.
 - detect the result of transmission.
 
 ## Requirement
@@ -20,10 +20,16 @@ And also with Android smartphone to detect the result of IR signal transmission.
 
 ## Usage
 
+- Air conditioner control.
+
 ## Installation
+
+- WIP
 
 ## Author
 
 [@rad0717](https://twitter.com/rad0717)
 
 ## License
+
+[MIT License](https://github.com/k-tahiro/tahiremogon/blob/master/LICENSE)
