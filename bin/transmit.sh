@@ -5,6 +5,7 @@ readonly DATA_DIR="/sdcard/DCIM/Camera"
 readonly LOG_DIR="/var/log/tahiremogon"
 readonly ADB_LOG_FILE="${LOG_DIR}/adb.log"
 readonly CMD_LOG_FILE="${LOG_DIR}/cmd.log"
+readonly ERR_LOG_FILE="${LOG_DIR}/err.log"
 
 sudo /usr/local/bin/bto_ir_cmd -e -t "$1" >>"${CMD_LOG_FILE}" 2>&1
 
@@ -31,7 +32,7 @@ do
         echo "Unexpected state!!"
         echo "There are too many files."
         echo "${FILENAME}"
-      } 1>&2
+      } | tee -a "${ERR_LOG_FILE}" 1>&2
       exit 1
     fi
   fi
