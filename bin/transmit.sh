@@ -10,6 +10,7 @@ adb shell am start -n com.huawei.camera/com.huawei.camera
 adb shell input keyevent 80
 adb shell input keyevent 27
 adb shell input keyevent 3
+adb shell input keyevent 223
 
 while :
 do
