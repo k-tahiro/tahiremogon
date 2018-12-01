@@ -6,10 +6,10 @@ sudo /usr/local/bin/bto_ir_cmd -e -t "$1" >/dev/null 2>&1
 
 adb shell touch "${DATA_DIR}/newer"
 adb shell input keyevent 82
-adb shell input keyevent 3
 adb shell am start -n com.huawei.camera/com.huawei.camera
 adb shell input keyevent 80
 adb shell input keyevent 27
+adb shell input keyevent 3
 
 while :
 do
