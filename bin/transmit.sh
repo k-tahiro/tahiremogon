@@ -1,12 +1,13 @@
 #!/bin/bash
 
+readonly CAMERA_APP="com.huawei.camera/com.huawei.camera"
 readonly DATA_DIR="/sdcard/DCIM/Camera"
 
 sudo /usr/local/bin/bto_ir_cmd -e -t "$1" >/dev/null 2>&1
 
 adb shell touch "${DATA_DIR}/newer"
 adb shell input keyevent 82 # unlock
-adb shell am start -n com.huawei.camera/com.huawei.camera # start camera app
+adb shell am start -n "${CAMERA_APP}" # start camera app
 adb shell input keyevent 80 # forcus
 adb shell input keyevent 27 # release the shutter
 adb shell input keyevent 3 # back to home
