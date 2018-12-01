@@ -39,4 +39,4 @@ do
 done
 adb shell rm -f "${DATA_DIR}/newer" >>"${ADB_LOG_FILE}" 2>&1
 
-basename "${FILENAME}"
+basename "${FILENAME}" | tr -d '\n'
