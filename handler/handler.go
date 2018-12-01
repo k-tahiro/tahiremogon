@@ -37,10 +37,11 @@ func Transmit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Command Undefined")
 	}
 
-	filename, err := exec.Command("/usr/local/bin/transmit.sh", signal).Output()
+	out, err := exec.Command("/usr/local/bin/transmit.sh", signal).Output()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
 	}
+	filename := string(out)
 
 	// TODO: 画像認識処理
 	fmt.Println(filename)
