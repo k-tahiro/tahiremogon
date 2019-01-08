@@ -3,19 +3,17 @@
 import argparse
 import os
 
+import fire
 from skimage.io import imread, imsave
 
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--target-file', required=True)
-    return parser.parse_args()
+def trim(input_file: str, output_file: str):
+    data = imread(input_file)
+    imsave(output_file, data[1250:1400, 750:1400])
 
 
 def main():
-    args = parse_args()
-    data = imread(args.target_file)
-    imsave(args.target_file, data[1300:1450, 250:1000])
+    fire.Fire(trim)
 
 
 if __name__ == '__main__':
