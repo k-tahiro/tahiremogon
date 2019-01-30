@@ -41,10 +41,6 @@ func Transmit(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
 	}
-	filename := string(out)
-
-	// TODO: 画像認識処理
-	fmt.Println(filename)
 
 	var response model.Response
 	response.Success = true
