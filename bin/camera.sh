@@ -10,12 +10,19 @@ IMG_DIR="${1:-"/var/opt/tahiremogon"}"
 
 {
   adb shell touch "${DATA_DIR}/newer"
+  sleep 1
   adb shell input keyevent 82 # unlock
+  sleep 1
   adb shell am start -n "${CAMERA_APP}" # start camera app
+  sleep 1
   adb shell input keyevent 80 # forcus
+  sleep 1
   adb shell input keyevent 27 # release the shutter
+  sleep 1
   adb shell input keyevent 3 # back to home
+  sleep 1
   adb shell input keyevent 223 # sleep
+  sleep 1
 } >>"${ADB_LOG_FILE}" 2>&1
 
 while :
@@ -24,7 +31,9 @@ do
   if [ "${FILENAME}" != "" ]; then
     if [ $(echo "${FILENAME}" | wc -l) -eq 1 ]; then
       adb pull "${FILENAME}" "${IMG_DIR}" >>"${ADB_LOG_FILE}" 2>&1
+      sleep 1
       adb shell rm -f "${FILENAME}" >>"${ADB_LOG_FILE}" 2>&1
+      sleep 1
       break
     else
       {
