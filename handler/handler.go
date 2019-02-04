@@ -43,7 +43,7 @@ func Transmit(c echo.Context) error {
 	}
 
 	var response model.Response
-	response.Success = true
+	response.Success = (signal == "stop" && out == "off") || (signal != "stop" && out == "on")
 	return cc.JSON(http.StatusOK, response)
 }
 
