@@ -42,8 +42,10 @@ func Transmit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
 	}
 
+	status := string(out)
+
 	var response model.Response
-	response.Success = (signal == "stop" && out == "off") || (signal != "stop" && out == "on")
+	response.Success = (signal == "stop" && status == "off") || (signal != "stop" && status == "on")
 	return cc.JSON(http.StatusOK, response)
 }
 
