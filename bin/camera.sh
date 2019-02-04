@@ -2,7 +2,7 @@
 
 readonly CAMERA_APP="com.huawei.camera/com.huawei.camera"
 readonly DATA_DIR="/sdcard/DCIM/Camera"
-readonly LOG_DIR="/var/log/tahiremovision"
+readonly LOG_DIR="/var/log/tahiremogon"
 readonly ADB_LOG_FILE="${LOG_DIR}/adb.log"
 readonly ERR_LOG_FILE="${LOG_DIR}/err.log"
 
