@@ -36,7 +36,7 @@ func Transmit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Command Undefined")
 	}
 
-	out, err := exec.Command("/usr/local/bin/transmit.sh", signal).Output()
+	out, err := exec.Command("/usr/local/bin/bto_ir_cmd", "-e", "-t", signal).Output()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
 	}
@@ -56,7 +56,7 @@ func Receive(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Bad Request Body")
 	}
 
-	signal, err := exec.Command("/usr/local/bin/receive.sh").Output()
+	signal, err := exec.Command("bin/receive.sh").Output()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
 	}
