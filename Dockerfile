@@ -1,14 +1,16 @@
-FROM resin/rpi-raspbian:jessie
+FROM balenalib/raspberry-pi2-golang
 
-ARG GOLANG_SRC="https://dl.google.com/go/go1.11.5.linux-armv6l.tar.gz"
+RUN go get -u github.com/labstack/echo/... \
+  && go get -u github.com/gocraft/dbr \
+  && go get github.com/mattn/go-sqlite3
 
-RUN wget "${GOLANG_SRC}" \
-  && tar -C /usr/local -xzf $(basename "${GOLANG_SRC}")
-COPY bin bin
 COPY handler handler
 COPY middleware middleware
 COPY model model
 COPY server.go server.go
 RUN go build server.go
+
+ARG DB_FILE
+COPY "${DB_FILE}" ./
 
 ENTRYPOINT [ "server" ]

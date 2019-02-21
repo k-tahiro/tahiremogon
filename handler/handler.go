@@ -10,11 +10,6 @@ import (
 	"../model"
 )
 
-// Handler
-func Hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
-}
-
 func Commands(c echo.Context) error {
 	cc := c.(*myMw.CustomContext)
 

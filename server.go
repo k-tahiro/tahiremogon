@@ -23,8 +23,6 @@ func main() {
 	e.Use(myMw.SQLiteMiddleware("./command.db"))
 
 	// Routes
-	e.GET("/", handler.Hello)
-	// Routes
 	commands := e.Group("/commands")
 	{
 		commands.GET("/", handler.Commands)
