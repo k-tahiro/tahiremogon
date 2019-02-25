@@ -20,7 +20,7 @@ func main() {
 	e.Use(myMw.MyCustomContextMiddleware())
 
 	// DB用Middlewareを適用
-	e.Use(myMw.SQLiteMiddleware("./command.db"))
+	e.Use(myMw.SQLiteMiddleware(os.Getenv("DB_FILE")))
 
 	// Routes
 	commands := e.Group("/commands")
