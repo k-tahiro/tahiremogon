@@ -60,13 +60,12 @@ func SSHClientMiddleware(address string, user string, password string) echo.Midd
 				return echo.NewHTTPError(http.StatusInternalServerError, "カスタムコンテキストが取得できません")
 			}
 
-			var hostKey ssh.PublicKey
 			config := &ssh.ClientConfig{
 				User: user,
 				Auth: []ssh.AuthMethod{
 					ssh.Password(password),
 				},
-				HostKeyCallback: ssh.FixedHostKey(hostKey),
+				HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 			}
 
 			hostport := fmt.Sprintf("%s:%d", address, 22)
