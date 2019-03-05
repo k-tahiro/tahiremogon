@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"os/exec"
+	"strings"
 
 	"github.com/labstack/echo"
 
@@ -31,15 +32,21 @@ func Transmit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Command Undefined")
 	}
 
-	out, err := exec.Command("/usr/local/bin/bto_ir_cmd", "-e", "-t", signal).Output()
+	session, err := cc.Client.NewSession()
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+	defer session.Close()
+
+	a := [...]string{"/usr/local/bin/bto_ir_cmd", "-e", "-t", signal}
+	sep := " "
+	command := strings.Join(a[:], sep)
+	if err := session.Run(command); err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	status := string(out)
-
 	var response model.Response
-	response.Success = (id == "stop" && status == "off") || (id != "stop" && status == "on")
+	response.Success = true
 	return cc.JSON(http.StatusOK, response)
 }
 
@@ -48,12 +55,12 @@ func Receive(c echo.Context) error {
 
 	request := new(model.Request)
 	if err := cc.Bind(request); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "Bad Request Body")
+		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
 	signal, err := exec.Command("bin/receive.sh").Output()
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "Command Execution Failed")
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
 	var command model.Command
