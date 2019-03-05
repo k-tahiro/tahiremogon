@@ -41,7 +41,7 @@ func SQLiteMiddleware(datasource string) echo.MiddlewareFunc {
 
 			conn, err := dbr.Open("sqlite3", datasource, nil)
 			if err != nil {
-				return echo.NewHTTPError(http.StatusInternalServerError, "DBが取得できません")
+				return echo.NewHTTPError(http.StatusInternalServerError, err)
 			}
 
 			// DBへのConnectionをコンテキストに設定して次へ
@@ -72,7 +72,7 @@ func SSHClientMiddleware(address string, user string, password string) echo.Midd
 			hostport := fmt.Sprintf("%s:%d", address, 22)
 			client, err := ssh.Dial("tcp", hostport, config)
 			if err != nil {
-				return echo.NewHTTPError(http.StatusInternalServerError, "SSHが接続できません")
+				return echo.NewHTTPError(http.StatusInternalServerError, err)
 			}
 
 			// リモコンへのSSH接続をコンテキストに設定して次へ
