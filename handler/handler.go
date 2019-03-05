@@ -38,7 +38,7 @@ func Transmit(c echo.Context) error {
 	}
 	defer session.Close()
 
-	a := [...]string{"/usr/local/bin/bto_ir_cmd", "-e", "-t", signal}
+	a := [...]string{"sudo", "/usr/local/bin/bto_ir_cmd", "-e", "-t", signal}
 	sep := " "
 	command := strings.Join(a[:], sep)
 	if err := session.Run(command); err != nil {
