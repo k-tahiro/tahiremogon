@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"os/exec"
 	"strings"
 
 	"github.com/labstack/echo"
@@ -58,8 +57,14 @@ func Receive(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
+	session, err := cc.Client.NewSession()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+	defer session.Close()
+
 	cmd := "sudo /usr/local/bin/bto_ir_cmd -e -r | tail -n 1 | cut -f 2 -d : | cut -b 2- | tr -d '\n'"
-	signal, err := exec.Command(cmd).Output()
+	signal, err := session.Output(cmd)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
