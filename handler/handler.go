@@ -58,7 +58,8 @@ func Receive(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	signal, err := exec.Command("bin/receive.sh").Output()
+	cmd := "sudo /usr/local/bin/bto_ir_cmd -e -r | tail -n 1 | cut -f 2 -d : | cut -b 2- | tr -d '\n'"
+	signal, err := exec.Command(cmd).Output()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
