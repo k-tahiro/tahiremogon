@@ -22,7 +22,7 @@ func main() {
 	e.Use(myMw.MyCustomContextMiddleware())
 
 	// DB用Middlewareを適用
-	e.Use(myMw.SQLiteMiddleware(os.Getenv("DB_FILE")))
+	e.Use(myMw.SQLiteMiddleware("./command.db"))
 
 	// SSHクライアント用Middlewareを適用
 	e.Use(myMw.SSHClientMiddleware(os.Getenv("HOSTNAME"), os.Getenv("USERNAME"), os.Getenv("PASSWORD")))
