@@ -32,7 +32,7 @@ func Transmit(c echo.Context) error {
 	}
 
 	cmd := "sudo /usr/local/bin/bto_ir_cmd -e -t" + " " + signal
-	if output, err := execCommand(os.Getenv("MODE"), cmd, cc); err != nil {
+	if _, err := execCommand(os.Getenv("MODE"), cmd, cc); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
