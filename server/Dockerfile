@@ -13,4 +13,4 @@ RUN go build server.go
 ARG DB_FILE
 COPY "${DB_FILE}" ./
 
-ENTRYPOINT [ "./server" ]
+CMD [ "./server" ]
