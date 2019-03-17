@@ -14,5 +14,5 @@ docker run -itd \
            -e "HOSTNAME=${HOSTNAME}" \
            -e "USERNAME=${USERNAME}" \
            -e "PASSWORD=${PASSWORD}" \
-           -n tahiremogon \
+           --name tahiremogon \
            tahiro/tahiremogon
