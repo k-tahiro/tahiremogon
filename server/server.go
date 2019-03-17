@@ -24,8 +24,10 @@ func main() {
 	// DB用Middlewareを適用
 	e.Use(myMw.SQLiteMiddleware("./command.db"))
 
-	// SSHクライアント用Middlewareを適用
-	e.Use(myMw.SSHClientMiddleware(os.Getenv("HOSTNAME"), os.Getenv("USERNAME"), os.Getenv("PASSWORD")))
+	if os.Getenv("MODE") == "ssh" {
+		// SSHクライアント用Middlewareを適用
+		e.Use(myMw.SSHClientMiddleware(os.Getenv("HOSTNAME"), os.Getenv("USERNAME"), os.Getenv("PASSWORD")))
+	}
 
 	// Routes
 	commands := e.Group("/commands")

@@ -31,16 +31,8 @@ func Transmit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Command Undefined")
 	}
 
-	session, err := cc.Client.NewSession()
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
-	}
-	defer session.Close()
-
-	a := [...]string{"sudo", "/usr/local/bin/bto_ir_cmd", "-e", "-t", signal}
-	sep := " "
-	command := strings.Join(a[:], sep)
-	if err := session.Run(command); err != nil {
+	cmd := "sudo /usr/local/bin/bto_ir_cmd -e -t" + " " + signal
+	if err := execCommand(os.Getenv("MODE"), cmd, cc); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
@@ -57,15 +49,8 @@ func Receive(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	session, err := cc.Client.NewSession()
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
-	}
-	defer session.Close()
-
 	cmd := "sudo /usr/local/bin/bto_ir_cmd -e -r | tail -n 1 | cut -f 2 -d : | cut -b 2- | tr -d '\n'"
-	signal, err := session.Output(cmd)
-	if err != nil {
+	if err := execCommand(os.Getenv("MODE"), cmd, cc); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
