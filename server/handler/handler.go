@@ -3,7 +3,6 @@ package handler
 import (
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/labstack/echo"
 
@@ -51,7 +50,8 @@ func Receive(c echo.Context) error {
 	}
 
 	cmd := "sudo /usr/local/bin/bto_ir_cmd -e -r | tail -n 1 | cut -f 2 -d : | cut -b 2- | tr -d '\n'"
-	if signal, err := execCommand(os.Getenv("MODE"), cmd, cc); err != nil {
+	signal, err := execCommand(os.Getenv("MODE"), cmd, cc)
+	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
