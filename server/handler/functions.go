@@ -16,7 +16,7 @@ func execCommand(mode string, command string, cc *myMw.CustomContext) ([]byte, e
 func execSSHCommand(command string, cc *myMw.CustomContext) ([]byte, error) {
 	session, err := cc.Client.NewSession()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer session.Close()
 	return session.Output(command)
