@@ -10,7 +10,4 @@ COPY model model
 COPY server.go server.go
 RUN go build server.go
 
-ARG DB_FILE
-COPY "${DB_FILE}" ./
-
 CMD [ "./server" ]
