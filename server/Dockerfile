@@ -11,7 +11,7 @@ RUN wget https://github.com/libusb/libusb/releases/download/v1.0.22/libusb-1.0.2
   && make install
 
 RUN git clone https://github.com/kjmkznr/bto_ir_cmd.git \
-  && pushd bto_ir_cmd \
+  && cd bto_ir_cmd \
   && make \
   && mv bto_ir_cmd /usr/local/bin/
 
