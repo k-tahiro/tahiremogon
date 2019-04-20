@@ -1,4 +1,4 @@
-FROM balenalib/raspberry-pi2-golang
+FROM balenalib/raspberry-pi2-golang:1.11.9
 
 RUN apt update \
   && apt install autoconf libtool automake build-essential git libudev-dev wget
