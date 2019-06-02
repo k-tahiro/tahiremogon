@@ -1,7 +1,8 @@
 FROM balenalib/raspberry-pi2-golang:1.11.9
 
 RUN apt update \
-  && apt install autoconf libtool automake build-essential git libudev-dev wget
+  && apt install autoconf libtool automake build-essential git \
+  && apt install libudev-dev wget
 
 RUN wget https://github.com/libusb/libusb/releases/download/v1.0.22/libusb-1.0.22.tar.bz2 \
   && tar jxf libusb-1.0.22.tar.bz2 \
