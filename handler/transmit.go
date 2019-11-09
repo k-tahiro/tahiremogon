@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"image"
 	"net/http"
@@ -84,6 +85,29 @@ func readImage(filename string) (tensor.Tensor, error) {
 }
 
 func imageToBCHW(img image.Image, dst tensor.Tensor) error {
+	w := img.Bounds().Dx()
+	h := img.Bounds().Dy()
+
+	for x := 0; x < w; x++ {
+		for y := 0; y < h; y++ {
+			r, g, b, a := img.At(x, y).RGBA()
+			if a != 65535 {
+				return errors.New("transparency not handled")
+			}
+			err := dst.SetAt(float32(uint8(r/0x100)), 0, 0, y, x)
+			if err != nil {
+				return err
+			}
+			err = dst.SetAt(float32(uint8(g/0x100)), 0, 1, y, x)
+			if err != nil {
+				return err
+			}
+			err = dst.SetAt(float32(uint8(b/0x100)), 0, 2, y, x)
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
