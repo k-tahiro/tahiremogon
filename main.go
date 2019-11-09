@@ -1,13 +1,14 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"github.com/labstack/echo"
 	echoMw "github.com/labstack/echo/middleware"
 
-	"./handler"
-	myMw "./middleware"
+	"github.com/k-tahiro/tahiremogon/handler"
+	myMw "github.com/k-tahiro/tahiremogon/middleware"
 )
 
 func main() {
@@ -24,10 +25,12 @@ func main() {
 	// DB用Middlewareを適用
 	e.Use(myMw.SQLiteMiddleware(os.Getenv("DB_FILE")))
 
-	if os.Getenv("MODE") == "ssh" {
-		// SSHクライアント用Middlewareを適用
-		e.Use(myMw.SSHClientMiddleware(os.Getenv("HOSTNAME"), os.Getenv("USERNAME"), os.Getenv("PASSWORD")))
+	// エアコン状態判定用モデルMiddlewareを適用
+	model, err := myMw.LoadPredictionModel(os.Getenv("ONNX_MODEL_FILE"))
+	if err != nil {
+		log.Fatal(err)
 	}
+	e.Use(myMw.PredictionModelMiddleware(model))
 
 	// Routes
 	commands := e.Group("/commands")
