@@ -43,7 +43,7 @@ func Transmit(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	cmd = "sudo ../bin/camera.sh"
+	cmd = "sudo /usr/local/bin/camera.sh"
 	filename, err := exec.Command("sh", "-c", cmd).Output()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
