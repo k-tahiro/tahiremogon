@@ -33,11 +33,12 @@ func main() {
 	e.Use(myMw.PredictionModelMiddleware(model))
 
 	// Routes
-	commands := e.Group("/commands")
+	codes := e.Group("/codes")
 	{
-		commands.GET("/", handler.Commands)
-		commands.POST("/transmit/:id", handler.Transmit)
-		commands.POST("/receive", handler.Receive)
+		codes.GET("/", handler.ReadCodes)
+		codes.POST("/:key", handler.CreateCode)
+		codes.DELETE("/:key", handler.DeleteCode)
+		codes.POST("/:key/transmit", handler.TransmitCode)
 	}
 
 	// Start server

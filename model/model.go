@@ -1,24 +1,13 @@
 package model
 
 type (
-    Command struct {
-        ID   string `db:"id"`
-        Name string  `db:"name"`
-        Signal string  `db:"signal"`
-    }
-
-    CommandJSON struct {
-        ID   string `json:"id"`
-        Name string  `json:"name"`
-        Signal string  `json:"signal"`
-    }
-	
-	Response struct {
-		Success bool `json:"success"`
+	Code struct {
+		ID   int    `json:"id"`
+		Key  string `json:"key"`
+		Code string `json:"code"`
 	}
 
-	Request struct {
-		ID string `json:"id"`
-		Name string `json:"name"`
-    }
+	TransmitResponse struct {
+		On bool `json:"on"`
+	}
 )

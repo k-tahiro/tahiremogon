@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"fmt"
 	"image"
 	"net/http"
 	"os"
@@ -27,43 +26,49 @@ var (
 	std  = [3]float32{0.229, 0.224, 0.225}
 )
 
-func Transmit(c echo.Context) error {
+func TransmitCode(c echo.Context) error {
 	cc := c.(*myMw.CustomContext)
 
-	id := cc.Param("id")
-	var signal string
+	key := cc.Param("key")
+	var code string
+
 	sess := cc.Connection.NewSession(nil)
-	sess.Select("signal").From("command").Where("id = ?", id).Load(&signal)
-	if signal == "" {
+	sess.Select("code").From("codes").Where("key = ?", key).Load(&code)
+	if code == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "Command Undefined")
 	}
 
-	cmd := "sudo /usr/local/bin/bto_ir_cmd -e -t" + " " + signal
+	cmd := "sudo /usr/local/bin/bto_ir_cmd -e -t" + " " + code
 	if _, err := exec.Command("sh", "-c", cmd).Output(); err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	cmd = "sudo /usr/local/bin/camera.sh"
-	filename, err := exec.Command("sh", "-c", cmd).Output()
+	label, err := confirm(c)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	response := &model.TransmitResponse{
+		On: label != 0,
+	}
+	return cc.JSON(http.StatusOK, response)
+}
+
+func confirm(c echo.Context) (int, error) {
+	cc := c.(*myMw.CustomContext)
+
+	cmd := "sudo /usr/local/bin/camera.sh"
+	filename, err := exec.Command("sh", "-c", cmd).Output()
+	if err != nil {
+		return -1, err
 	}
 
 	input, err := readImage(*(*string)(unsafe.Pointer(&filename)))
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
+		return -1, err
 	}
 
-	index, err := cc.PredictionModel.Predict(input)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
-	}
-
-	fmt.Println(index)
-
-	var response model.Response
-	response.Success = true
-	return cc.JSON(http.StatusOK, response)
+	return cc.PredictionModel.Predict(input)
 }
 
 func readImage(filename string) (tensor.Tensor, error) {
@@ -103,15 +108,15 @@ func imageToBCHW(img image.Image, dst tensor.Tensor) error {
 			if a != 65535 {
 				return errors.New("transparency not handled")
 			}
-			err := dst.SetAt(float32(uint8(r/0x100)), 0, 0, y, x)
+			err := dst.SetAt(float32(float64(r)/0xffff), 0, 0, y, x)
 			if err != nil {
 				return err
 			}
-			err = dst.SetAt(float32(uint8(g/0x100)), 0, 1, y, x)
+			err = dst.SetAt(float32(float64(g)/0xffff), 0, 1, y, x)
 			if err != nil {
 				return err
 			}
-			err = dst.SetAt(float32(uint8(b/0x100)), 0, 2, y, x)
+			err = dst.SetAt(float32(float64(b)/0xffff), 0, 2, y, x)
 			if err != nil {
 				return err
 			}
@@ -128,8 +133,8 @@ func normalize(input tensor.Tensor) (err error) {
 				if err != nil {
 					return err
 				}
-				zn := z.(float32) / 255
-				err = input.SetAt((zn-mean[channel])/std[channel], 0, channel, x, y)
+				zf := z.(float32)
+				err = input.SetAt((zf-mean[channel])/std[channel], 0, channel, x, y)
 				if err != nil {
 					return err
 				}
