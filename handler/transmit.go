@@ -50,7 +50,16 @@ func Transmit(c echo.Context) error {
 	}
 
 	input, err := readImage(*(*string)(unsafe.Pointer(&filename)))
-	predict(cc.PredictionModel, input)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	index, err := cc.PredictionModel.Predict(input)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	}
+
+	fmt.Println(index)
 
 	var response model.Response
 	response.Success = true
@@ -128,32 +137,4 @@ func normalize(input tensor.Tensor) (err error) {
 		}
 	}
 	return nil
-}
-
-func predict(predictionModel *myMw.PredictionModel, input tensor.Tensor) (int, error) {
-	backend := predictionModel.Graph
-	m := predictionModel.Model
-
-	m.SetInput(0, input)
-	err := backend.Run()
-	if err != nil {
-		return -1, err
-	}
-	output, err := m.GetOutputTensors()
-	if err != nil {
-		return -1, err
-	}
-
-	// Find maximum value of prediction results
-	max := float32(-9999)
-	maxi := -1
-	for i, v := range output[0].Data().([]float32) {
-		fmt.Println(i, v)
-		if v > max {
-			max = v
-			maxi = i
-		}
-	}
-
-	return maxi, nil
 }

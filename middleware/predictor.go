@@ -1,12 +1,14 @@
 package middleware
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/labstack/echo"
 	"github.com/owulveryck/onnx-go"
 	"github.com/owulveryck/onnx-go/backend/x/gorgonnx"
+	"gorgonia.org/tensor"
 )
 
 type PredictionModel struct {
@@ -30,9 +32,10 @@ func LoadPredictionModel(model string) (*PredictionModel, error) {
 		return nil, err
 	}
 
-	var predictionModel *PredictionModel
-	predictionModel.Graph = backend
-	predictionModel.Model = m
+	predictionModel := &PredictionModel{
+		Graph: backend,
+		Model: m,
+	}
 	return predictionModel, nil
 }
 
@@ -48,4 +51,32 @@ func PredictionModelMiddleware(predictionModel *PredictionModel) echo.Middleware
 			return next(cctx)
 		}
 	}
+}
+
+func (predictionModel *PredictionModel) Predict(input tensor.Tensor) (int, error) {
+	backend := predictionModel.Graph
+	m := predictionModel.Model
+
+	m.SetInput(0, input)
+	err := backend.Run()
+	if err != nil {
+		return -1, err
+	}
+	output, err := m.GetOutputTensors()
+	if err != nil {
+		return -1, err
+	}
+
+	// Find maximum value of prediction results
+	max := float32(-9999)
+	maxi := -1
+	for i, v := range output[0].Data().([]float32) {
+		fmt.Println(i, v)
+		if v > max {
+			max = v
+			maxi = i
+		}
+	}
+
+	return maxi, nil
 }
