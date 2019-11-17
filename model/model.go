@@ -8,6 +8,7 @@ type (
 	}
 
 	TransmitResponse struct {
-		On bool `json:"on"`
+		Sucess bool `json:"sucess"`
+		Result int  `json:"result"`
 	}
 )

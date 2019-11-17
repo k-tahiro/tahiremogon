@@ -3,6 +3,7 @@ package middleware
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	"github.com/labstack/echo"
@@ -16,7 +17,7 @@ type PredictionModel struct {
 	Model *onnx.Model
 }
 
-func LoadPredictionModel(model string) (*PredictionModel, error) {
+func loadPredictionModel(model string) (*PredictionModel, error) {
 	backend := gorgonnx.NewGraph()
 	m := onnx.NewModel(backend)
 
@@ -39,7 +40,11 @@ func LoadPredictionModel(model string) (*PredictionModel, error) {
 	return predictionModel, nil
 }
 
-func PredictionModelMiddleware(predictionModel *PredictionModel) echo.MiddlewareFunc {
+func PredictionModelMiddleware(modelFile string) echo.MiddlewareFunc {
+	predictionModel, err := loadPredictionModel(modelFile)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cctx, ok := c.(*CustomContext)

@@ -43,20 +43,21 @@ func TransmitCode(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err)
 	}
 
-	label, err := confirm(c)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err)
+	response := &model.TransmitResponse{
+		Sucess: true,
+		Result: -1,
 	}
 
-	response := &model.TransmitResponse{
-		On: label != 0,
+	predictionModel := cc.PredictionModel
+	if predictionModel != nil {
+		label, _ := confirm(predictionModel)
+		response.Result = label
 	}
+
 	return cc.JSON(http.StatusOK, response)
 }
 
-func confirm(c echo.Context) (int, error) {
-	cc := c.(*myMw.CustomContext)
-
+func confirm(predictionModel *myMw.PredictionModel) (int, error) {
 	cmd := "sudo /usr/local/bin/camera.sh"
 	filename, err := exec.Command("sh", "-c", cmd).Output()
 	if err != nil {
@@ -68,7 +69,7 @@ func confirm(c echo.Context) (int, error) {
 		return -1, err
 	}
 
-	return cc.PredictionModel.Predict(input)
+	return predictionModel.Predict(input)
 }
 
 func readImage(filename string) (tensor.Tensor, error) {

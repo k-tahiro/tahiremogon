@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"os"
 
 	"github.com/labstack/echo"
@@ -26,11 +25,7 @@ func main() {
 	e.Use(myMw.SQLiteMiddleware(os.Getenv("DB_FILE")))
 
 	// エアコン状態判定用モデルMiddlewareを適用
-	model, err := myMw.LoadPredictionModel(os.Getenv("ONNX_MODEL_FILE"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	e.Use(myMw.PredictionModelMiddleware(model))
+	e.Use(myMw.PredictionModelMiddleware(os.Getenv("ONNX_MODEL_FILE")))
 
 	// Routes
 	codes := e.Group("/codes")
@@ -38,7 +33,7 @@ func main() {
 		codes.GET("/", handler.ReadCodes)
 		codes.POST("/:key", handler.CreateCode)
 		codes.DELETE("/:key", handler.DeleteCode)
-		codes.POST("/:key/transmit", handler.TransmitCode)
+		codes.POST("/transmit/:key", handler.TransmitCode)
 	}
 
 	// Start server
