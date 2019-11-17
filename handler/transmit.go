@@ -3,6 +3,8 @@ package handler
 import (
 	"errors"
 	"image"
+	_ "image/jpeg"
+	_ "image/png"
 	"net/http"
 	"os"
 	"os/exec"
@@ -84,6 +86,7 @@ func readImage(filename string) (tensor.Tensor, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	img = resize.Resize(width, height, img, resize.Bilinear)
 
 	input := tensor.New(tensor.WithShape(1, 3, height, width), tensor.Of(tensor.Float32))
