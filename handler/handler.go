@@ -26,8 +26,7 @@ func CreateCode(c echo.Context) error {
 		Code: code,
 	}
 
-	sess := cc.Connection.NewSession(nil)
-	sess.InsertInto("command").Columns("key", "code").Record(sCode).Exec()
+	cc.Session.InsertInto("command").Columns("key", "code").Record(sCode).Exec()
 
 	return cc.JSON(http.StatusOK, sCode)
 }
@@ -36,8 +35,7 @@ func ReadCodes(c echo.Context) error {
 	cc := c.(*myMw.CustomContext)
 
 	var codes []model.Code
-	sess := cc.Connection.NewSession(nil)
-	sess.Select("id", "key", "code").From("codes").Load(&codes)
+	cc.Session.Select("id", "key", "code").From("codes").Load(&codes)
 
 	return cc.JSON(http.StatusOK, codes)
 }
@@ -48,9 +46,8 @@ func DeleteCode(c echo.Context) error {
 	key := cc.Param("key")
 	var code model.Code
 
-	sess := cc.Connection.NewSession(nil)
-	sess.Select("*").From("codes").Where("key = ?", key).Load(&code)
-	sess.DeleteFrom("codes").Where("key = ?", key).Exec()
+	cc.Session.Select("*").From("codes").Where("key = ?", key).Load(&code)
+	cc.Session.DeleteFrom("codes").Where("key = ?", key).Exec()
 
 	return cc.JSON(http.StatusOK, code)
 }

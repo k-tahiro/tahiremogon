@@ -34,8 +34,7 @@ func TransmitCode(c echo.Context) error {
 	key := cc.Param("key")
 	var code string
 
-	sess := cc.Connection.NewSession(nil)
-	sess.Select("code").From("codes").Where("key = ?", key).Load(&code)
+	cc.Session.Select("code").From("codes").Where("key = ?", key).Load(&code)
 	if code == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "Command Undefined")
 	}

@@ -8,7 +8,7 @@ import (
 // カスタムコンテキスト
 type CustomContext struct {
 	echo.Context
-	Connection      *dbr.Connection
+	Session         *dbr.Session
 	PredictionModel *PredictionModel
 }
 
