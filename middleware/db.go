@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"log"
 	"net/http"
 
 	"github.com/gocraft/dbr/v2"
@@ -13,7 +12,7 @@ import (
 func SQLiteMiddleware(datasource string) echo.MiddlewareFunc {
 	conn, err := dbr.Open("sqlite3", datasource, nil)
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
