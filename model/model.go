@@ -9,6 +9,6 @@ type (
 
 	TransmitResponse struct {
 		Sucess bool `json:"sucess"`
-		Result int  `json:"result"`
+		Label  int  `json:"label"`
 	}
 )
