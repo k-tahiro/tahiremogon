@@ -17,7 +17,7 @@ type PredictionModel struct {
 	Model *onnx.Model
 }
 
-func loadPredictionModel(model string) (*PredictionModel, error) {
+func LoadPredictionModel(model string) (*PredictionModel, error) {
 	backend := gorgonnx.NewGraph()
 	m := onnx.NewModel(backend)
 
@@ -41,7 +41,7 @@ func loadPredictionModel(model string) (*PredictionModel, error) {
 }
 
 func PredictionModelMiddleware(modelFile string) echo.MiddlewareFunc {
-	predictionModel, err := loadPredictionModel(modelFile)
+	predictionModel, err := LoadPredictionModel(modelFile)
 	if err != nil {
 		log.Fatal(err)
 	}
