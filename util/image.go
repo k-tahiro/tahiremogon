@@ -78,19 +78,18 @@ func imageToBCHW(img image.Image, dst tensor.Tensor) error {
 
 func normalize(input tensor.Tensor) (err error) {
 	for channel := 0; channel < 3; channel++ {
-		for y := 0; y < height; y++ {
-			for x := 0; x < width; x++ {
-				z, err := input.At(0, channel, x, y)
-				if err != nil {
-					return err
-				}
-				zf := z.(float32)
-				err = input.SetAt((zf-mean[channel])/std[channel], 0, channel, x, y)
-				if err != nil {
-					return err
-				}
-			}
-		}
+		m := mean[channel]
+		s := std[channel]
+		f := func(c float32) float32 { return (c - m) / s }
+
+		cchannel, _ := input.Slice(nil, ss(channel), nil, nil)
+		cchannel.Apply(f)
 	}
 	return nil
 }
+
+type ss int
+
+func (s ss) Start() int { return int(s) }
+func (s ss) End() int   { return int(s) + 1 }
+func (s ss) Step() int  { return 0 }
