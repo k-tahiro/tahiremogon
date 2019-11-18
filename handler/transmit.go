@@ -1,8 +1,6 @@
 package handler
 
 import (
-	_ "image/jpeg"
-	_ "image/png"
 	"net/http"
 	"os/exec"
 	"unsafe"

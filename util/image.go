@@ -3,6 +3,8 @@ package util
 import (
 	"errors"
 	"image"
+	_ "image/jpeg"
+	_ "image/png"
 	"os"
 
 	"github.com/nfnt/resize"
