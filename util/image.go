@@ -82,9 +82,12 @@ func normalize(input tensor.Tensor) (err error) {
 		s := std[channel]
 		f := func(c float32) float32 { return (c - m) / s }
 
-		cchannel, _ := input.Slice(nil, ss(channel), nil, nil)
-		_, err := cchannel.Apply(f, tensor.WithReuse(cchannel))
+		cchannel, err := input.Slice(nil, ss(channel), nil, nil)
 		if err != nil {
+			return err
+		}
+
+		if _, err = cchannel.Apply(f, tensor.WithReuse(cchannel)); err != nil {
 			return err
 		}
 	}
