@@ -7,7 +7,7 @@ require (
 	github.com/gocraft/dbr/v2 v2.6.3
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/labstack/gommon v0.3.0 // indirect
-	github.com/mattn/go-sqlite3 v1.11.0
+	github.com/mattn/go-sqlite3 v1.12.0
 	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
 	github.com/owulveryck/onnx-go v0.0.0-20191107131630-7767174e2322
 	github.com/valyala/fasttemplate v1.1.0 // indirect
