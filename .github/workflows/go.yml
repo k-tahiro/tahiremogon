@@ -36,3 +36,8 @@ jobs:
         GOOS: linux
         GOARCH: arm
         GOARM: 6
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: tahiremogon
+        path: tahiremogon
